@@ -1,0 +1,151 @@
+spawn:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpawnManager : MonoBehaviour
+{
+    public GameObject[] prefabs;
+    private int index=0;
+    private float delay = 5f;
+    private float interval = 1.5f;
+    // Start is called before the first frame update
+    void Start()
+    {
+        InvokeRepeating("spawnAnimal",delay,interval);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+    void spawnAnimal()
+    {
+        index = Random.Range(0, prefabs.Length);
+        Vector3 direction = new Vector3(Random.Range(-20f,20f),0,29.1f);
+        Instantiate(prefabs[index],direction,prefabs[index].transform.rotation);
+    }
+}
+
+move forward:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MoveForward : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.Translate(Vector3.forward*Time.deltaTime*5f);
+    }
+}
+
+player controller:
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public GameObject[] prefabs;
+    private float speed = 10.0f;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        transform.Translate(Vector3.right * horizontalInput * Time.deltaTime * speed);
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            SpawnFood();
+        }
+    }
+    void SpawnFood() 
+    {
+        int index = Random.Range(0, prefabs.Length);
+        Vector3 direction = new Vector3(transform.position.x, 1.2f, transform.position.z);
+        Instantiate(prefabs[index],direction,prefabs[index].transform.rotation);
+    }
+}
+
+destroy animal:
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DestoryAnimal : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(gameObject);
+    }
+}
+
+
+rigidbody:
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Move : MonoBehaviour
+{
+    private Rigidbody rb;
+    public float speed = 5f;
+    private bool check = false;
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (check == true)
+        {
+            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            rb.velocity = direction * speed;
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        check = true;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        
+        GetComponent<MeshRenderer>().material.color=other.GetComponent<MeshRenderer>().material.color;
+    }
+}
